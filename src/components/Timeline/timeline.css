@@ -1,0 +1,48 @@
+.timeline {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.timeline-item {
+    margin-bottom: 40px;
+    border-left: 2px solid #ccc;
+    padding-left: 20px;
+    position: relative;
+}
+
+.timeline-item::before {
+    content: '';
+    width: 12px;
+    height: 12px;
+    background-color: #fff;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    position: absolute;
+    left: -7px;
+    top: 0;
+}
+
+.timeline-item h4 {
+    margin-top: 0;
+    color: #444;
+    font-family: "Press Start 2P", sans-serif;
+    font-weight: 400;
+    font-style: bold;
+}
+
+.timeline-item p {
+    color: #666;
+    font-family: "Press Start 2P", sans-serif;
+    font-weight: 400;
+    font-style: regular;
+}
+
+.timeline-item img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
