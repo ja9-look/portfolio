@@ -1,23 +1,24 @@
-import babyphoto from "../../assets/babyphoto.png";
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import "@testing-library/jest-dom/extend-expect";
+import Timeline from "./Timeline";
+import babyPhoto from "../../assets/babyPhoto.png"
+import { TimelineItem } from "./timelineData";
 
-export interface TimelineItem {
-  id: number;
-  name: string;
-  startDate: Date;
-  description: string;
-  location: string;
-  imageSrc: string;
-  professionalExperience: boolean;
-}
 
-const timelineData: TimelineItem[] = [
+jest.mock("process", () => ({
+  ...jest.requireActual("process"),
+  env: { PUBLIC_URL: "" },
+}));
+
+const mockTimelineData: TimelineItem[] = [
   {
     id: 1,
     name: "Birth",
     startDate: new Date("1995"),
     description: "",
     location: "Hong Kong",
-    imageSrc: babyphoto,
+    imageSrc: babyPhoto,
     professionalExperience: false,
   },
   {
@@ -131,4 +132,44 @@ const timelineData: TimelineItem[] = [
   },
 ];
 
-export default timelineData;
+// Mock the Timeline component to use our mock data
+jest.mock("./Timeline", () => {
+  const OriginalTimeline = jest.requireActual("./Timeline").default;
+  return (props: any) => (
+    <OriginalTimeline
+      {...props}
+      timelineData={mockTimelineData}
+    />
+  );
+});
+
+describe("Timeline Component", () => {
+  beforeEach(() => {
+    render(<Timeline />);
+  });
+
+  test("renders all timeline items", () => {
+    mockTimelineData.forEach((item) => {
+      const name = screen.getByText(item.name);
+      expect(name).toBeInTheDocument();
+    });
+  });
+
+  test("renders images for each timeline item", () => {
+    const images = screen.getAllByRole("img");
+    expect(images).toHaveLength(13);
+
+    images.forEach((img, index) => {
+      expect(img).toHaveAttribute("src", mockTimelineData[index].imageSrc);
+      expect(img).toHaveAttribute("alt", mockTimelineData[index].name);
+    });
+  });
+
+  // test("timeline items are in chronological order", () => {
+  //   const yearTitles = screen.getAllByText(/^\d{6}:/);
+  //   const years = yearTitles.map((el) =>
+  //     parseInt(el.textContent!.split(":")[0])
+  //   );
+  //   expect(years).toEqual(years.sort((a, b) => a - b));
+  // });
+});
